@@ -1,0 +1,27 @@
+---
+
+- name: Stop engine
+  shell: killall -9 java
+
+- name: Copy cleanup answer file
+  copy:
+    src: files/engine_cleanup_answer_file.conf
+    dest: '/tmp/engine_cleanup_answer_file.conf'
+    mode: 0700
+
+- name: Engine Cleanup
+  shell: /home/admin/ovirt-engine/bin/engine-cleanup --config-append=/tmp/engine_cleanup_answer_file.conf
+  ignore_errors: True
+  become: true
+  become_user: admin
+
+- name: Copy setup answer file
+  copy:
+    src: files/engine_setup_answer_file.conf
+    dest: '/tmp/engine_setup_answer_file.conf'
+    mode: 0700
+
+- name: Engine Setup
+  shell: /home/admin/ovirt-engine/bin/engine-setup --config=/tmp/engine_setup_answer_file.conf
+  become: true
+  become_user: admin
